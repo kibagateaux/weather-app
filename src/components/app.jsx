@@ -32,19 +32,22 @@ function App() {
       cityName,
       timeframe,
     })
-    .then((weather) => {
-      setError(null);
-      setWeather(weather);
-    })
-    .catch((err) => {
-      const statusCode = err.response.status;
-      if(statusCode === 404) {
-        return setError("Can not find selected region. Please try again.");
+    .then((res) => {
+      // raw response returned means we didn't parse data and it's an error
+      if(!res.response) {
+        setError(null);
+        setWeather(res);
+      } else {
+        const {status: statusCode} = res.response;
+        if(statusCode === 404) {
+          return setError("Can not find selected region. Please try again.");
+        }
+        if(statusCode === 401) {
+          return setError("Unauthorized! Please check your API key");
+        }
       }
-      if(statusCode === 401) {
-        return setError("Unauthorized! Please check your API key");
-      }
-    })
+
+    });
     
   };
 
