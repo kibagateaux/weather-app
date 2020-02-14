@@ -3,16 +3,24 @@ import LocationInput from "./LocationInput";
 import WeatherDisplay from './WeatherDisplay';
 
 import "../App.css";
-import { fetchWeather } from "../utils";
+import { fetchWeather, CELSIUS, FARENHEIT } from "../utils";
+
 
 function App() {
   const [weatherData, setWeather] = useState([{}]);
   const [cityName, setCity] = useState('');
-  const [degreeMetric, setMetric] = useState('C');
+  const [degreeMetrics, setMetric] = useState([FARENHEIT, CELSIUS ]);
   const [timeframe, setTimeframe] = useState(1); // number of days
   const [error, setError] = useState();
 
   const onInputChange = (func) => (event) => func(event.target.value);
+  const updateMetric = (selectedMetric) => {
+    // Puts selected degree metric as first element in state's array
+    const nonSelectedMetrics = [...degreeMetrics]
+      .filter(val =>val !== selectedMetric);
+    const newArr = [selectedMetric, ...nonSelectedMetrics];
+    return setMetric(newArr);
+  };
 
   const getWeather = () => {
     if(cityName.length < 1 || !Number(timeframe)) {
@@ -43,20 +51,20 @@ function App() {
   return (
     <div id="app">
       <h1>Weather In: {cityName}</h1>
-      <h3> {error ? error : `Displaying degrees in: ${degreeMetric}°`} </h3>
-
+      <h3> {error ? error : `Displaying degrees in: ${degreeMetrics[0]}°`} </h3>
 
       <div id="app-container">
         <LocationInput
           setCity={onInputChange(setCity)}
-          setMetric={onInputChange(setMetric)}
+          setMetric={onInputChange(updateMetric)}
           setTimeframe={onInputChange(setTimeframe)}
           getWeather={getWeather}
+          degreeMetrics={degreeMetrics}
         />
         <WeatherDisplay
           weatherData={weatherData}
           cityName={cityName}
-          degreeMetric={degreeMetric}
+          degreeMetric={degreeMetrics[0]}
         />
       </div>
 

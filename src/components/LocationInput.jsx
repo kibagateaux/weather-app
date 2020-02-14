@@ -5,6 +5,7 @@ const LocationInput = (props) => {
     setCity,
     setTimeframe,
     setMetric,
+    degreeMetrics,
   } = props;  
 
   return (
@@ -26,21 +27,22 @@ const LocationInput = (props) => {
 
       <label for="degree-metric">Display degrees in:</label>
       <div>
-        {['Celsius', 'Farenheit'].map((str) => (
+        {[...degreeMetrics].sort().map((str) => (
           <div className="radio" key={str}>
             <label>{str}</label>
             <input
               name="degree-metric"
               type="radio"
-              value={str.slice(0,1)}
+              value={str}
               onChange={setMetric}
+              {...(degreeMetrics[0] === str && {checked: "checked"})}
             />
         </div>
         ))}
       </div>
 
     </div>
-  )
+  );
 
 };
 
